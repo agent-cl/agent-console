@@ -1,6 +1,6 @@
 {
   "name": "agent-console",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "AI command toolbox for terminal workflows.",
   "type": "module",
   "bin": {
@@ -27,6 +27,15 @@
   ],
   "author": "",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/agent-cl/agent-console.git",
+    "directory": "packages/cli"
+  },
+  "homepage": "https://github.com/agent-cl/agent-console/tree/main/packages/cli",
+  "bugs": {
+    "url": "https://github.com/agent-cl/agent-console/issues"
+  },
   "engines": {
     "node": ">=20"
   },

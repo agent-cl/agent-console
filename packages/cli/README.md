@@ -1,4 +1,4 @@
-# agent-console
+# AI Command Toolbox
 
 CLI toolbox for AI workflows. First command available now: `rmbg`.
 
