@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>agent-console | AI Commands for Terminal</title>
+    <meta
+      name="description"
+      content="agent-console runs AI commands from your terminal. Start with: npx agent-console rmbg image.jpg"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <header class="hero">
+      <nav class="topbar">
+        <span class="brand">agent-console</span>
+        <a class="top-link" href="#install">Install</a>
+      </nav>
+      <div class="hero-content">
+        <p class="eyebrow">CLI TOOL</p>
+        <h1>AI command toolbox for terminal workflows.</h1>
+        <p class="subtitle">
+          Start with `rmbg` for background removal. Add more commands over time under one CLI surface.
+        </p>
+        <div class="hero-actions">
+          <button id="copy-command" class="btn-primary" type="button">Copy npx Command</button>
+          <a class="btn-secondary" href="#demo">See Output</a>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <section id="demo" class="band demo">
+        <div class="section-title-row">
+          <h2>Before / After</h2>
+          <p>Drag slider to compare synthetic source sample vs `agent-console rmbg` output.</p>
+        </div>
+        <div class="compare-shell">
+          <div class="compare-frame" id="compare-frame">
+            <img src="./landing-assets/demo-before.svg" alt="Before background removal sample" class="before" />
+            <div class="after-wrap" id="after-wrap">
+              <img src="./landing-assets/demo-after.svg" alt="After background removal sample" class="after" />
+            </div>
+            <div class="divider" id="divider"></div>
+          </div>
+          <input id="compare-range" type="range" min="0" max="100" value="54" />
+        </div>
+      </section>
+
+      <section class="band features">
+        <h2>Why teams use it</h2>
+        <div class="feature-grid">
+          <article>
+            <h3>One Command</h3>
+            <p>Run `npx agent-console rmbg image.jpg` and get output beside source image.</p>
+          </article>
+          <article>
+            <h3>Batch Ready</h3>
+            <p>Process many images into one folder with `--out-dir`.</p>
+          </article>
+          <article>
+            <h3>Quality Controls</h3>
+            <p>Set output format, quality, model size, and foreground mask type.</p>
+          </article>
+        </div>
+      </section>
+
+      <section id="install" class="band install">
+        <h2>Try it now</h2>
+        <p>Use latest version directly from npm.</p>
+        <div class="command-row">
+          <code id="npx-command">npx agent-console@latest rmbg photo.png</code>
+          <button id="copy-inline" class="btn-primary" type="button">Copy</button>
+        </div>
+        <pre class="snippet"><code>npx agent-console rmbg photo.png
+npx agent-console rmbg photo.png --output photo-cut.png
+npx agent-console rmbg *.png --out-dir cutouts --model small</code></pre>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <p>agent-console • command: rmbg</p>
+    </footer>
+
+    <script src="./app.js"></script>
+  </body>
+  </html>
