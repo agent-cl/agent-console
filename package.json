@@ -9,10 +9,15 @@
     "apps/*"
   ],
   "scripts": {
+    "build": "npm run build --workspaces --if-present",
     "test": "npm run test --workspace agent-console",
     "pack:check": "npm run pack:check --workspace agent-console",
     "dev:landing": "npm run dev --workspace agent-console-landing",
     "deploy:landing": "npm run deploy --workspace agent-console-landing"
+  },
+  "devDependencies": {
+    "@types/node": "^20.19.1",
+    "typescript": "^5.8.3"
   },
   "engines": {
     "node": ">=20"

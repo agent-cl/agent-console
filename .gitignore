@@ -3,3 +3,6 @@ node_modules/
 coverage/
 .DS_Store
 .vercel
+packages/cli/dist/
+apps/landing/dist/
+*.tsbuildinfo

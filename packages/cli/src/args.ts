@@ -1,8 +1,37 @@
 import path from "node:path";
 
-export const VERSION = "0.1.1";
+export const VERSION = "0.1.2";
 
-const DEFAULTS = {
+export type ModelName = "small" | "medium";
+export type OutputFormat = "png" | "webp";
+export type CutType = "foreground" | "background" | "mask";
+
+export interface RmbgOptions {
+  model: ModelName;
+  format: OutputFormat;
+  quality: number;
+  type: CutType;
+  force: boolean;
+  quiet: boolean;
+  debug: boolean;
+  help: boolean;
+  version: boolean;
+  output?: string;
+  outDir?: string;
+}
+
+export interface ParsedRmbgArgs {
+  inputs: string[];
+  options: RmbgOptions;
+}
+
+export interface OutputPathOptions {
+  format: OutputFormat;
+  output?: string;
+  outDir?: string;
+}
+
+const DEFAULTS: RmbgOptions = {
   model: "medium",
   format: "png",
   quality: 0.8,
@@ -14,13 +43,13 @@ const DEFAULTS = {
   version: false,
 };
 
-const MODEL_VALUES = new Set(["small", "medium"]);
-const FORMAT_VALUES = new Set(["png", "webp"]);
-const TYPE_VALUES = new Set(["foreground", "background", "mask"]);
+const MODEL_VALUES = new Set<ModelName>(["small", "medium"]);
+const FORMAT_VALUES = new Set<OutputFormat>(["png", "webp"]);
+const TYPE_VALUES = new Set<CutType>(["foreground", "background", "mask"]);
 
-export function parseRmbgArgs(argv) {
+export function parseRmbgArgs(argv: string[]): ParsedRmbgArgs {
   const options = { ...DEFAULTS };
-  const inputs = [];
+  const inputs: string[] = [];
 
   for (let index = 0; index < argv.length; index += 1) {
     const arg = argv[index];
@@ -64,11 +93,11 @@ export function parseRmbgArgs(argv) {
         break;
       case "-m":
       case "--model":
-        options.model = readValue();
+        options.model = readValue() as ModelName;
         break;
       case "-f":
       case "--format":
-        options.format = readValue();
+        options.format = readValue() as OutputFormat;
         break;
       case "-q":
       case "--quality":
@@ -76,7 +105,7 @@ export function parseRmbgArgs(argv) {
         break;
       case "-t":
       case "--type":
-        options.type = readValue();
+        options.type = readValue() as CutType;
         break;
       case "--force":
         options.force = true;
@@ -127,7 +156,7 @@ export function parseRmbgArgs(argv) {
   return { inputs, options };
 }
 
-export function outputPathFor(input, options) {
+export function outputPathFor(input: string, options: OutputPathOptions): string {
   if (options.output) {
     return path.resolve(options.output);
   }
@@ -140,7 +169,7 @@ export function outputPathFor(input, options) {
   return path.join(directory, `${basename}-cut.${extension}`);
 }
 
-export function helpText() {
+export function helpText(): string {
   return `agent-console ${VERSION}
 
 Terminal toolkit with multiple AI commands.
@@ -160,7 +189,7 @@ Try:
 `;
 }
 
-export function rmbgHelpText() {
+export function rmbgHelpText(): string {
   return `agent-console rmbg ${VERSION}
 
 Remove image backgrounds from your terminal.

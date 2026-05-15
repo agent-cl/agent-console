@@ -2,16 +2,24 @@ import fs from "node:fs/promises";
 import { createRequire } from "node:module";
 import path from "node:path";
 import { pathToFileURL } from "node:url";
+import type { Config } from "@imgly/background-removal-node";
 import { VERSION, helpText, outputPathFor, parseRmbgArgs, rmbgHelpText } from "./args.js";
+import type { CutType, ModelName, OutputFormat, RmbgOptions } from "./args.js";
 
 const require = createRequire(import.meta.url);
 
-const MIME_BY_FORMAT = {
+interface BackgroundRemovalApi {
+  removeBackground: (image: URL | string, configuration?: Config) => Promise<Blob>;
+  removeForeground: (image: URL | string, configuration?: Config) => Promise<Blob>;
+  segmentForeground: (image: URL | string, configuration?: Config) => Promise<Blob>;
+}
+
+const MIME_BY_FORMAT: Record<OutputFormat, "image/png" | "image/webp"> = {
   png: "image/png",
   webp: "image/webp",
 };
 
-export async function main(argv) {
+export async function main(argv: string[]): Promise<void> {
   if (argv.length === 0 || argv[0] === "help" || argv[0] === "-h" || argv[0] === "--help") {
     console.log(helpText());
     return;
@@ -32,7 +40,7 @@ export async function main(argv) {
   throw new Error(`unknown command: ${command}`);
 }
 
-async function runRmbg(argv) {
+async function runRmbg(argv: string[]): Promise<void> {
   const { inputs, options } = parseRmbgArgs(argv);
 
   if (options.help) {
@@ -50,7 +58,7 @@ async function runRmbg(argv) {
   }
 }
 
-async function cutImage(input, options) {
+async function cutImage(input: string, options: RmbgOptions): Promise<void> {
   const { backgroundRemoval, publicPath } = loadBackgroundRemoval();
   const sourcePath = path.resolve(input);
   const outputPath = outputPathFor(input, options);
@@ -65,7 +73,7 @@ async function cutImage(input, options) {
 
   const blob = await remove(pathToFileURL(sourcePath), {
     debug: options.debug,
-    model: options.model,
+    model: options.model as ModelName,
     publicPath,
     output: {
       format: MIME_BY_FORMAT[options.format],
@@ -73,7 +81,7 @@ async function cutImage(input, options) {
     },
     progress: options.quiet
       ? undefined
-      : (key, current, total) => {
+      : (key: string, current: number, total: number) => {
           if (total > 0) {
             const percent = Math.round((current / total) * 100);
             process.stderr.write(`\rDownloading ${key}: ${percent}%`);
@@ -93,7 +101,7 @@ async function cutImage(input, options) {
   }
 }
 
-function removerForType(backgroundRemoval, type) {
+function removerForType(backgroundRemoval: BackgroundRemovalApi, type: CutType) {
   switch (type) {
     case "foreground":
       return backgroundRemoval.removeBackground;
@@ -107,11 +115,23 @@ function removerForType(backgroundRemoval, type) {
 }
 
 function loadBackgroundRemoval() {
-  const module = require("node:module");
+  const module = require("node:module") as {
+    _resolveFilename: (
+      request: string,
+      parent: NodeModule | null | undefined,
+      isMain: boolean,
+      options?: unknown,
+    ) => string;
+  };
   const originalResolveFilename = module._resolveFilename;
   const redirectedPackages = new Set(["lodash", "sharp", "zod"]);
 
-  module._resolveFilename = function resolveAgentToolDependency(request, parent, isMain, options) {
+  module._resolveFilename = function resolveAgentToolDependency(
+    request,
+    parent,
+    isMain,
+    options,
+  ): string {
     if (
       redirectedPackages.has(request) &&
       parent?.filename?.includes(`node_modules${path.sep}@imgly${path.sep}background-removal-node`)
@@ -127,7 +147,7 @@ function loadBackgroundRemoval() {
     const publicPath = new URL("./", pathToFileURL(modulePath)).href;
 
     return {
-      backgroundRemoval: require("@imgly/background-removal-node"),
+      backgroundRemoval: require("@imgly/background-removal-node") as BackgroundRemovalApi,
       publicPath,
     };
   } finally {
@@ -135,7 +155,7 @@ function loadBackgroundRemoval() {
   }
 }
 
-async function assertReadableFile(filePath) {
+async function assertReadableFile(filePath: string): Promise<void> {
   let stat;
 
   try {
@@ -149,7 +169,7 @@ async function assertReadableFile(filePath) {
   }
 }
 
-async function prepareOutput(outputPath, force) {
+async function prepareOutput(outputPath: string, force: boolean): Promise<void> {
   await fs.mkdir(path.dirname(outputPath), { recursive: true });
 
   try {

@@ -4,7 +4,8 @@
   "private": true,
   "description": "Landing page for agent-console.",
   "scripts": {
-    "dev": "npx serve . -l 4173",
-    "deploy": "vercel --prod"
+    "build": "tsc -p tsconfig.json",
+    "dev": "npm run build && python3 -m http.server 4173",
+    "deploy": "npm run build && vercel --prod"
   }
 }
