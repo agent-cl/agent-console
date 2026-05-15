@@ -45,4 +45,4 @@ npm run pack:check
 
 ## License
 
-AGPL-3.0-or-later. Core background removal dependency is AGPL-licensed.
+MIT.

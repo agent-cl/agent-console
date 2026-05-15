@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "description": "Monorepo for agent-console CLI and landing page.",
+  "license": "MIT",
   "workspaces": [
     "packages/*",
     "apps/*"
