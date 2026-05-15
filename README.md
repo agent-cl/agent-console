@@ -1,48 +1,31 @@
-# agent-console
+# agent-console monorepo
 
-CLI toolbox for AI workflows. First command available now: `rmbg`.
+Single repo for:
 
-`agent-console rmbg` uses `@imgly/background-removal-node`, which runs an ONNX model locally. First run downloads model assets and takes longer; later runs use cache.
+- `packages/cli` → npm package `agent-console` (`npx agent-console rmbg image.jpg`)
+- `apps/landing` → static landing page used for Vercel deploy
 
-## Usage
-
-```sh
-npx agent-console rmbg portrait.jpg
-npx agent-console rmbg product.jpg --output product-cut.png
-npx agent-console rmbg photos/*.jpg --out-dir cutouts --model small
-```
-
-Default output is `<name>-cut.png` beside the source image.
-
-## Options
-
-```txt
-Usage:
-  agent-console rmbg <image> [options]
-  agent-console rmbg <image...> --out-dir <dir> [options]
-
-Options:
-  -o, --output <file>       Output path for one image
-  -d, --out-dir <dir>      Output directory for one or many images
-  -m, --model <name>       Model: small or medium (default: medium)
-  -f, --format <format>    Output: png or webp (default: png)
-  -q, --quality <number>   Output quality from 0 to 1 (default: 0.8)
-  -t, --type <type>        foreground, background, or mask (default: foreground)
-      --force              Overwrite existing output files
-      --quiet              Only print errors
-      --debug              Print model debug output
-  -v, --version            Print version
-  -h, --help               Show help
-```
-
-## Development
+## Workspace commands
 
 ```sh
 npm install
 npm test
 npm run pack:check
+npm run dev:landing
+```
+
+## Publish CLI package
+
+```sh
+npm --workspace agent-console publish --access public
+```
+
+## Deploy landing
+
+```sh
+npm run deploy:landing
 ```
 
 ## License
 
-AGPL-3.0-or-later. Core background removal dependency is AGPL-licensed.
+AGPL-3.0-or-later.

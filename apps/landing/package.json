@@ -1,0 +1,10 @@
+{
+  "name": "agent-console-landing",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Landing page for agent-console.",
+  "scripts": {
+    "dev": "npx serve . -l 4173",
+    "deploy": "vercel --prod"
+  }
+}
